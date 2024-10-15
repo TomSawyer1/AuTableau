@@ -5,6 +5,7 @@ const connectdb = require("./bdd");
 const app = express();
 app.use (express.json()); // Express analyse le contenue json
 
+
 // Creations de route vers bdd
 
 // App get pour recuperer toute les liste dans classrooms
@@ -60,6 +61,33 @@ app.post("/classrooms",async (req,res) => {
     
     
     });
+
+    //Supprimer une classe
+    app.delete("/classrooms/:id", async (req, res) => {
+        try {
+            const db = await connectdb();
+            const classroomId = req.params.id; // Récupérer l'ID de la classe depuis les paramètres de l'URL
+            
+            // Recherche de la classe avec l'ID
+            const result = await db.collection('classrooms').findOne({ _id: new require('mongodb').ObjectId(classroomId) });
+            
+            if (!result) {
+                // 404 si la classe n'existe pas
+                return res.status(404).json({ error: "La classe n'existe pas." });
+            }
+    
+            // Suppression 
+            await db.collection('classrooms').deleteOne({ _id: new require('mongodb').ObjectId(classroomId) });
+    
+            // 204 No content si la suppression est réussie
+            res.status(204).json();
+    
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    });
+     
 
 
 app.listen(port, () => {
