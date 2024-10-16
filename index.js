@@ -87,6 +87,43 @@ app.post("/classrooms",async (req,res) => {
             res.status(500).json({ error: "Erreur serveur" });
         }
     });
+
+    //Modifier une classe
+    app.put("/classrooms/:id", async (req, res) => {
+        try {
+
+            const db = await connectdb();
+            const classroomId = req.params.id;
+            const { name } = req.body;
+    
+            if (!name) {
+                return res.status(422).json({ error: "Le paramètre name est manquant." });
+            }
+
+            // si la classe existe pas
+            const existingClassroom = await db.collection('classrooms').findOne({ _id: new ObjectId(classroomId) });
+            if (!existingClassroom) {
+                return res.status(404).json({ error: "La classe n'existe pas." });
+            }
+
+
+            // le nom de la classe existe deja
+            const duplicateClass = await db.collection('classrooms').findOne({ name });
+            if (duplicateClass && duplicateClass._id.toString() !== classroomId) {
+                return res.status(409).json({ error: "Le paramètre 'name' existe déjà." });
+            }
+
+            
+            // requete d'update en fonction de l'id
+            await db.collection('classrooms').updateOne({ _id: new ObjectId(classroomId) }, { $set: { name } }); // .updateOne est toujours acompagne de $set
+            res.status(200).json({ message: "Ok" });
+
+        } catch (err) {
+
+            console.error(err);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    }); 
      
 
 
