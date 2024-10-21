@@ -1,34 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Au Tableau</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="index.js" defer></script>
+    <style>
+        /* Dégradé avec fallback et compatibilité multi-navigateurs */
+        .bg-gradient-custom {
+            background: #6441a5; /* Fallback pour les anciens navigateurs */
+            background: -webkit-linear-gradient(to right, #6441a5, #2a0845); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #6441a5, #2a0845); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        }
+    </style>
 </head>
-<body>
-    <div>
-        <!--les deux premiere box-->
-        <div>
-            <div>
-                <div></div>
-                <div></div>
-            </div>
-            <div>
-
-            </div>
-        </div>
-
-        <div>
-            <div>
-
-            </div>
-            <div>
-                <div></div>
-                <div></div>
-            </div>
-        </div>
-    </div>
+<body class="h-screen bg-gradient-custom">
+    
 </body>
 </html>

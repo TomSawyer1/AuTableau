@@ -28,6 +28,8 @@ res.status(200).json(classrooms);
 
 });
 
+//--------------------- CLASSE -------------------//
+
 // Ajout d'une classe
 app.post("/classrooms",async (req,res) => {
     // res = ce que l'user recois (generalement en JSON)
@@ -125,6 +127,145 @@ app.post("/classrooms",async (req,res) => {
         }
     }); 
      
+//--------------------- STUDENTS -------------------//
+
+// App get pour recuperer la liste des etudiants
+app.get("/classrooms/:classroom_id/students",async (req,res) => {
+    // res = ce que l'user recois (generalement en JSON)
+    // req = ce que l'user envois
+    
+    try{
+    
+    const db = await connectdb();
+    const students = await db.collection('students').find().toArray();
+    //status 200 : c'est OP
+    res.status(200).json(students);
+    } catch(error){
+        console.error(error);
+        res.status(500).json({erreur:"Erreur serveur"})
+    
+    }
+    
+    });
+
+
+    // ajouter un etudiant dans une classe
+    app.post("/classrooms/:classroom_id/students", async (req, res) => {
+        try {
+            const db = await connectdb(); // Connexion à la base de données
+    
+            const classroomId = req.params.classroom_id; 
+            const { name } = req.body; 
+    
+            
+            if (!name) {
+                return res.status(422).json({ error: "Il manque le paramètre 'name'" });
+            }
+    
+            
+            const classroom = await db.collection('classrooms').findOne({ _id: new ObjectId(classroomId) });
+            if (!classroom) {
+                return res.status(404).json({ error: "Classe non trouvée" });
+            }
+    
+            
+            const studentExists = classroom.students.some(student => student.name === name);
+            if (studentExists) {
+                return res.status(409).json({ error: "Le paramètre 'name' existe déjà dans la classe" });
+            }
+    
+            
+            const updatedClassroom = await db.collection('classrooms').updateOne(
+                { _id: new ObjectId(classroomId) },
+                { $push: { students: { name } } } // Ajouter l'étudiant à la liste des étudiants
+            );
+    
+            if (updatedClassroom.modifiedCount === 0) {
+                return res.status(400).json({ error: "Impossible d'ajouter l'étudiant" });
+            }
+    
+            // Succès : étudiant ajouté
+            res.status(201).json({ message: "Étudiant ajouté avec succès" });
+    
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    });
+
+
+    //Supprimer un etudiant
+
+    app.delete("/classrooms/:classroom_id/students/:student_id", async (req, res) => {
+        try {
+            const db = await connectdb(); 
+    
+            const classroomId = req.params.classroom_id; 
+            const studentId = req.params.student_id; 
+    
+            
+            const classroom = await db.collection('classrooms').findOne({ _id: new ObjectId(classroomId) });
+            if (!classroom) {
+                return res.status(404).json({ error: "La classe n'éxiste pas ou l'étudiant n'éxiste pas" });
+            }
+    
+            // Vérifier si l'étudiant existe dans la classe
+            const studentIndex = classroom.students.findIndex(student => student._id.toString() === studentId);
+            if (studentIndex === -1) {
+                return res.status(404).json({ error: "La classe n'éxiste pas ou l'étudiant n'éxiste pas" });
+            }
+    
+            // Supprimer l'étudiant de la classe
+            const updatedClassroom = await db.collection('classrooms').updateOne(
+                { _id: new ObjectId(classroomId) },
+                { $pull: { students: { _id: new ObjectId(studentId) } } } // Retirer l'étudiant correspondant à l'ID
+            );
+    
+            if (updatedClassroom.modifiedCount === 0) {
+                return res.status(400).json({ error: "Impossible de supprimer l'étudiant" });
+            }
+    
+            res.status(204).json({ message: "No content" });
+    
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    });
+        
+
+    // modifier un etudiant
+    app.put("/:classroom_id/students/:student_id", async (req, res) => {
+        try {
+            const db = await connectdb();
+            const classroomId = req.params.classroom_id;
+            const studentId = req.params.student_id;
+            const { name } = req.body;
+
+            if (!name) {
+                return res.status(422).json({ error: "Le paramètre name est manquant." });
+            }
+
+            // Vérifier si la classe et l'étudiant existent
+            const student = await db.collection('students').findOne({ _id: new ObjectId(studentId), classroom_id: new ObjectId(classroomId) });
+            if (!student) {
+                return res.status(404).json({ error: "L'étudiant ou la classe n'existe pas." });
+            }
+
+            // Vérifier s'il existe un étudiant avec le même nom dans la classe
+            const duplicateStudent = await db.collection('students').findOne({ name, classroom_id: new ObjectId(classroomId) });
+            if (duplicateStudent && duplicateStudent._id.toString() !== studentId) {
+                return res.status(409).json({ error: "Le nom de l'étudiant existe déjà dans cette classe." });
+            }
+
+            // Mise à jour de l'étudiant
+            await db.collection('students').updateOne({ _id: new ObjectId(studentId) }, { $set: { name } });
+            res.status(200).json({ message: "Étudiant mis à jour." });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    });
 
 
 app.listen(port, () => {
