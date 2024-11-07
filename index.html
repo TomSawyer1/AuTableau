@@ -15,6 +15,59 @@
     </style>
 </head>
 <body class="h-screen bg-gradient-custom">
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 space-y-6">
+        <h2 class="text-2xl font-bold text-indigo-600 mb-4">Au tableau</h2>
+        
+        
+        <form class="space-y-4">
+          <div>
+            <label for="class-name" class="block text-sm font-medium text-gray-700">Nom de la classe</label>
+            <input type="text" id="class-name" name="class-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Entrez le nom de la classe">
+          </div>
+          <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            Créer
+          </button>
+        </form>
+      
+        
+        <div>
+          <label for="select-class" class="block text-sm font-medium text-gray-700 mt-4">Sélectionnez une classe</label>
+          <select id="select-class" name="select-class" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <option value="">Choisir une classe</option>
+            
+          </select>
+        </div>
+      
+        
+        <form class="space-y-4 mt-4">
+          <div>
+            <label for="student-name" class="block text-sm font-medium text-gray-700">Nom de l'étudiant</label>
+            <input type="text" id="student-name" name="student-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Entrez le nom de l'étudiant">
+          </div>
+          <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            Ajouter
+          </button>
+        </form>
+
+        <form class="space-y-4 mt-6">
+            <div>
+              <label for="select-class" class="block text-sm font-medium text-gray-700">Sélectionnez une classe</label>
+              <select id="select-class" name="select-class" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option value="">Choisir une classe</option>
+              </select>
+            </div>
+            <div>
+              <label for="defense-name" class="block text-sm font-medium text-gray-700">Nom de la soutenance</label>
+              <input type="text" id="defense-name" name="defense-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Entrez le nom de la soutenance">
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              Créer
+            </button>
+          </form>
+      </div>
+      
+      
+      
     
 </body>
 </html>
